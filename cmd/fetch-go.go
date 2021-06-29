@@ -43,12 +43,20 @@ func fetchGo(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	log15.Info("Fetched all OSV Data from osv-vulnerabilities/Go")
-	osvs, err := fetcher.FetchOSVDetails(models.GoType)
+	osvJSONs, err := fetcher.FetchOSVs(models.GoType)
 	if err != nil {
+		log15.Error("Failed to Fetch OSV Data from osv-vulnerabilities/Go.", "err", err)
 		return err
 	}
 
-	log15.Info("Fetched", "OSVs", len(osvs))
+	log15.Info("Fetched", "OSVs", len(osvJSONs))
+
+	log15.Info("Insert OSVs into DB", "db", driver.Name())
+	if err := driver.InsertOSVs(models.GoType, osvJSONs); err != nil {
+		log15.Error("Failed to insert.", "dbpath",
+			viper.GetString("dbpath"), "err", err)
+		return err
+	}
 
 	if err := driver.UpsertFetchMeta(fetchMeta); err != nil {
 		log15.Error("Failed to upsert FetchMeta to DB.", "err", err)

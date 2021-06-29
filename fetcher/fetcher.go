@@ -13,7 +13,8 @@ import (
 	"golang.org/x/xerrors"
 )
 
-func FetchOSVDetails(fetchOSVType models.OSVType) (osvs []models.OSVJSON, err error) {
+// FetchOSVs :
+func FetchOSVs(fetchOSVType models.OSVType) (osvs []models.OSVJSON, err error) {
 	url := fmt.Sprintf("https://osv-vulnerabilities.storage.googleapis.com/%s/all.zip", fetchOSVType)
 	body, err := util.FetchURL(url)
 	if err != nil {

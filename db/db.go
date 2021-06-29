@@ -18,6 +18,8 @@ type DB interface {
 	IsGostModelV1() (bool, error)
 	GetFetchMeta() (*models.FetchMeta, error)
 	UpsertFetchMeta(*models.FetchMeta) error
+
+	InsertOSVs(models.OSVType, []models.OSVJSON) error
 }
 
 // NewDB returns db driver
