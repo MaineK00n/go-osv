@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/MaineK00n/go-osv/db"
+	"github.com/MaineK00n/go-osv/fetcher"
 	"github.com/MaineK00n/go-osv/models"
 	"github.com/inconshreveable/log15"
 	"github.com/spf13/cobra"
@@ -40,6 +41,14 @@ func fetchDWF(cmd *cobra.Command, args []string) (err error) {
 		log15.Error("Failed to Insert CVEs into DB. SchemaVersion is old", "SchemaVersion", map[string]uint{"latest": models.LatestSchemaVersion, "DB": fetchMeta.SchemaVersion})
 		return xerrors.New("Failed to Insert CVEs into DB. SchemaVersion is old")
 	}
+
+	log15.Info("Fetched all OSV Data from osv-vulnerabilities/DWF")
+	osvs, err := fetcher.FetchOSVDetails(models.DWFType)
+	if err != nil {
+		return err
+	}
+
+	log15.Info("Fetched", "OSVs", len(osvs))
 
 	if err := driver.UpsertFetchMeta(fetchMeta); err != nil {
 		log15.Error("Failed to upsert FetchMeta to DB.", "err", err)

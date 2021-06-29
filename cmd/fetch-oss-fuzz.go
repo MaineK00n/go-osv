@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/MaineK00n/go-osv/db"
+	"github.com/MaineK00n/go-osv/fetcher"
 	"github.com/MaineK00n/go-osv/models"
 	"github.com/inconshreveable/log15"
 	"github.com/spf13/cobra"
@@ -14,14 +15,14 @@ var ossFuzzCmd = &cobra.Command{
 	Use:   "oss-fuzz",
 	Short: "Fetch the CVE information from osv-vulnerabilities/OSS-Fuzz",
 	Long:  `Fetch the CVE information from osv-vulnerabilities/OSS-Fuzz`,
-	RunE:  fetchOssFuzz,
+	RunE:  fetchOSSFuzz,
 }
 
 func init() {
 	fetchCmd.AddCommand(ossFuzzCmd)
 }
 
-func fetchOssFuzz(cmd *cobra.Command, args []string) (err error) {
+func fetchOSSFuzz(cmd *cobra.Command, args []string) (err error) {
 	log15.Info("Initialize Database")
 	driver, locked, err := db.NewDB(viper.GetString("dbtype"), viper.GetString("dbpath"), viper.GetBool("debug-sql"))
 	if err != nil {
@@ -40,6 +41,14 @@ func fetchOssFuzz(cmd *cobra.Command, args []string) (err error) {
 		log15.Error("Failed to Insert CVEs into DB. SchemaVersion is old", "SchemaVersion", map[string]uint{"latest": models.LatestSchemaVersion, "DB": fetchMeta.SchemaVersion})
 		return xerrors.New("Failed to Insert CVEs into DB. SchemaVersion is old")
 	}
+
+	log15.Info("Fetched all OSV Data from osv-vulnerabilities/OSS-Fuzz")
+	osvs, err := fetcher.FetchOSVDetails(models.OSSFuzzType)
+	if err != nil {
+		return err
+	}
+
+	log15.Info("Fetched", "OSVs", len(osvs))
 
 	if err := driver.UpsertFetchMeta(fetchMeta); err != nil {
 		log15.Error("Failed to upsert FetchMeta to DB.", "err", err)
