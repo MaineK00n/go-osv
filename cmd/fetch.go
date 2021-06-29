@@ -16,8 +16,8 @@ func init() {
 	RootCmd.AddCommand(fetchCmd)
 
 	fetchCmd.PersistentFlags().Int("wait", 0, "Interval between fetch (seconds)")
-	viper.BindPFlag("wait", fetchCmd.PersistentFlags().Lookup("wait"))
+	_ = viper.BindPFlag("wait", fetchCmd.PersistentFlags().Lookup("wait"))
 
 	fetchCmd.PersistentFlags().Int("threads", 5, "The number of threads to be used")
-	viper.BindPFlag("threads", fetchCmd.PersistentFlags().Lookup("threads"))
+	_ = viper.BindPFlag("threads", fetchCmd.PersistentFlags().Lookup("threads"))
 }

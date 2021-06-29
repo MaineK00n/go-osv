@@ -11,7 +11,7 @@ func Test_FetchMeta(t *testing.T) {
 	}{
 		{
 			in: FetchMeta{
-				SchemaVersion: 1,
+				SchemaVersion: 0,
 			},
 			outdated: true,
 		},
