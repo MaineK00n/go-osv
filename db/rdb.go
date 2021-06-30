@@ -310,7 +310,7 @@ func (r *RDBDriver) GetOSVbyID(ID string, osvType string) ([]models.OSV, error) 
 	if err := q.Find(&osvIDs).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			log15.Error("Failed to GetOSVbyID", "err", err)
-			return []models.OSV{}, err
+			return nil, err
 		}
 		return []models.OSV{}, nil
 	}
@@ -319,7 +319,7 @@ func (r *RDBDriver) GetOSVbyID(ID string, osvType string) ([]models.OSV, error) 
 	if err := r.conn.Preload("Affects.Ranges").Preload("Affects.Versions").Preload(clause.Associations).Where("id IN ?", osvIDs).Find(&osv).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			log15.Error("Failed to GetOSVbyID", "err", err)
-			return []models.OSV{}, err
+			return nil, err
 		}
 		return []models.OSV{}, nil
 	}
@@ -340,7 +340,7 @@ func (r *RDBDriver) GetOSVbyPackageName(name string, osvType string) ([]models.O
 
 	if err := q.Find(&osvIDs).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return []models.OSV{}, err
+			return nil, err
 		}
 		return []models.OSV{}, nil
 	}
@@ -348,7 +348,7 @@ func (r *RDBDriver) GetOSVbyPackageName(name string, osvType string) ([]models.O
 	osv := []models.OSV{}
 	if err := r.conn.Preload("Affects.Ranges").Preload("Affects.Versions").Preload(clause.Associations).Where("id IN ?", osvIDs).Find(&osv).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return []models.OSV{}, err
+			return nil, err
 		}
 		return []models.OSV{}, nil
 	}
