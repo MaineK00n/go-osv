@@ -86,3 +86,13 @@ func (r *RedisDriver) UpsertFetchMeta(*models.FetchMeta) error {
 func (r *RedisDriver) InsertOSVs(_ models.OSVType, osvs []models.OSVJSON) error {
 	return nil
 }
+
+// GetOSVbyID :
+func (r *RedisDriver) GetOSVbyID(ID string, osvType string) ([]models.OSV, error) {
+	return []models.OSV{}, nil
+}
+
+// GetOSVbyPackageName :
+func (r *RedisDriver) GetOSVbyPackageName(name string, osvType string) ([]models.OSV, error) {
+	return []models.OSV{}, nil
+}

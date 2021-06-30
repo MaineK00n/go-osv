@@ -20,6 +20,8 @@ type DB interface {
 	UpsertFetchMeta(*models.FetchMeta) error
 
 	InsertOSVs(models.OSVType, []models.OSVJSON) error
+	GetOSVbyID(ID string, osvType string) ([]models.OSV, error)
+	GetOSVbyPackageName(name string, osvType string) ([]models.OSV, error)
 }
 
 // NewDB returns db driver

@@ -75,8 +75,8 @@ type OSVJSON struct {
 
 // OSV :
 type OSV struct {
-	ID                int64 `json:"-"`
-	EntryID           string
+	ID                int64  `json:"-" gorm:"index:idx_osv_id"`
+	EntryID           string `json:"ID"`
 	Published         time.Time
 	Modified          time.Time
 	Withdrawn         time.Time
@@ -94,9 +94,9 @@ type OSV struct {
 
 // OSVAliases :
 type OSVAliases struct {
-	ID    int64 `json:"-"`
-	OSVID int64 `json:"-"`
-	Alias string
+	ID    int64  `json:"-"`
+	OSVID int64  `json:"-"`
+	Alias string `gorm:"index:idx_osv_aliases_alias"`
 }
 
 // OSVRelated :
@@ -108,10 +108,10 @@ type OSVRelated struct {
 
 // OSVPackage :
 type OSVPackage struct {
-	ID        int64 `json:"-"`
-	OSVID     int64 `json:"-"`
-	Ecosystem string
-	Name      string
+	ID        int64  `json:"-"`
+	OSVID     int64  `json:"-"`
+	Ecosystem string `gorm:"index:idx_osv_packages_ecosystem"`
+	Name      string `gorm:"index:idx_osv_packages_name"`
 	Purl      string
 }
 

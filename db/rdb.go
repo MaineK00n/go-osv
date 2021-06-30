@@ -10,6 +10,7 @@ import (
 
 	"github.com/MaineK00n/go-osv/config"
 	"github.com/MaineK00n/go-osv/models"
+	"github.com/inconshreveable/log15"
 	sqlite3 "github.com/mattn/go-sqlite3"
 	"golang.org/x/xerrors"
 	pb "gopkg.in/cheggaaa/pb.v1"
@@ -17,6 +18,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 )
 
@@ -292,4 +294,64 @@ func (r *RDBDriver) deleteAndInsertOSVs(conn *gorm.DB, insertOSVType models.OSVT
 	bar.Finish()
 
 	return nil
+}
+
+// GetOSVbyID :
+func (r *RDBDriver) GetOSVbyID(ID string, osvType string) ([]models.OSV, error) {
+	osvIDs := []int64{}
+
+	q := r.conn.Model(models.OSVAliases{}).Select("osv_aliases.osv_id")
+	if osvType != "" {
+		q = q.Joins("JOIN osv_packages ON osv_aliases.osv_id = osv_packages.osv_id").Where("ecosystem = ? AND alias = ?", osvType, ID)
+	} else {
+		q = q.Where("alias = ?", ID)
+	}
+
+	if err := q.Find(&osvIDs).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			log15.Error("Failed to GetOSVbyID", "err", err)
+			return []models.OSV{}, err
+		}
+		return []models.OSV{}, nil
+	}
+
+	osv := []models.OSV{}
+	if err := r.conn.Preload("Affects.Ranges").Preload("Affects.Versions").Preload(clause.Associations).Where("id IN ?", osvIDs).Find(&osv).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			log15.Error("Failed to GetOSVbyID", "err", err)
+			return []models.OSV{}, err
+		}
+		return []models.OSV{}, nil
+	}
+
+	return osv, nil
+}
+
+// GetOSVbyPackageName :
+func (r *RDBDriver) GetOSVbyPackageName(name string, osvType string) ([]models.OSV, error) {
+	osvIDs := []int64{}
+
+	q := r.conn.Model(models.OSVPackage{}).Select("osv_packages.osv_id")
+	if osvType != "" {
+		q = q.Where("ecosystem = ? AND name = ?", osvType, name)
+	} else {
+		q = q.Where("name = ?", name)
+	}
+
+	if err := q.Find(&osvIDs).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return []models.OSV{}, err
+		}
+		return []models.OSV{}, nil
+	}
+
+	osv := []models.OSV{}
+	if err := r.conn.Preload("Affects.Ranges").Preload("Affects.Versions").Preload(clause.Associations).Where("id IN ?", osvIDs).Find(&osv).Error; err != nil {
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return []models.OSV{}, err
+		}
+		return []models.OSV{}, nil
+	}
+
+	return osv, nil
 }
