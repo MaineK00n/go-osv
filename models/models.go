@@ -83,11 +83,11 @@ type OSV struct {
 	Aliases           []OSVAliases
 	Related           []OSVRelated
 	Package           OSVPackage
-	Summary           string
-	Details           string
+	Summary           string `gorm:"type:text"`
+	Details           string `gorm:"type:text"`
 	Affects           OSVAffects
 	References        []OSVReferences
-	Severity          string
+	Severity          string `gorm:"type:varchar(255)"`
 	EcosystemSpecific OSVEcosystemSpecific
 	DatabaseSpecific  OSVDatabaseSpecific
 }
@@ -96,23 +96,23 @@ type OSV struct {
 type OSVAliases struct {
 	ID    int64  `json:"-"`
 	OSVID int64  `json:"-"`
-	Alias string `gorm:"index:idx_osv_aliases_alias"`
+	Alias string `gorm:"type:varchar(255);index:idx_osv_aliases_alias"`
 }
 
 // OSVRelated :
 type OSVRelated struct {
-	ID      int64 `json:"-"`
-	OSVID   int64 `json:"-"`
-	Related string
+	ID      int64  `json:"-"`
+	OSVID   int64  `json:"-"`
+	Related string `gorm:"type:varchar(255)"`
 }
 
 // OSVPackage :
 type OSVPackage struct {
 	ID        int64  `json:"-"`
 	OSVID     int64  `json:"-"`
-	Ecosystem string `gorm:"index:idx_osv_packages_ecosystem"`
-	Name      string `gorm:"index:idx_osv_packages_name"`
-	Purl      string
+	Ecosystem string `gorm:"type:varchar(255);index:idx_osv_packages_ecosystem"`
+	Name      string `gorm:"type:varchar(255);index:idx_osv_packages_name"`
+	Purl      string `gorm:"type:varchar(255)"`
 }
 
 // OSVAffects :
@@ -125,27 +125,27 @@ type OSVAffects struct {
 
 // OSVAffectsRanges :
 type OSVAffectsRanges struct {
-	ID           int64 `json:"-"`
-	OSVAffectsID int64 `json:"-"`
-	Type         string
-	Repo         string
-	Introduced   string
-	Fixed        string
+	ID           int64  `json:"-"`
+	OSVAffectsID int64  `json:"-"`
+	Type         string `gorm:"type:varchar(255)"`
+	Repo         string `gorm:"type:varchar(255)"`
+	Introduced   string `gorm:"type:varchar(255)"`
+	Fixed        string `gorm:"type:varchar(255)"`
 }
 
 // OSVAffectsVersions :
 type OSVAffectsVersions struct {
-	ID           int64 `json:"-"`
-	OSVAffectsID int64 `json:"-"`
-	Version      string
+	ID           int64  `json:"-"`
+	OSVAffectsID int64  `json:"-"`
+	Version      string `gorm:"type:varchar(255)"`
 }
 
 // OSVReferences :
 type OSVReferences struct {
-	ID    int64 `json:"-"`
-	OSVID int64 `json:"-"`
-	Type  string
-	URL   string
+	ID    int64  `json:"-"`
+	OSVID int64  `json:"-"`
+	Type  string `gorm:"type:varchar(255)"`
+	URL   string `gorm:"type:text"`
 }
 
 // OSVEcosystemSpecific :
