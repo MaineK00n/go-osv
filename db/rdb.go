@@ -227,59 +227,48 @@ func (r *RDBDriver) deleteAndInsertOSVs(conn *gorm.DB, insertOSVType models.OSVT
 		affectsIDs := []int64{}
 		result := tx.Model(models.OSVAffects{}).Select("id").Where("osv_id IN ?", oldIDs).Find(&affectsIDs)
 		if result.Error != nil && !errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to select old affects: %w", result.Error)
 		}
 
 		if result.RowsAffected > 0 {
 			if err := tx.Unscoped().Where("osv_affects_id IN ?", affectsIDs).Delete(&models.OSVAffectsRanges{}).Error; err != nil {
-				tx.Rollback()
 				return xerrors.Errorf("Failed to delete: %w", err)
 			}
 
 			if err := tx.Unscoped().Where("osv_affects_id IN ?", affectsIDs).Delete(&models.OSVAffectsVersions{}).Error; err != nil {
-				tx.Rollback()
 				return xerrors.Errorf("Failed to delete: %w", err)
 			}
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVAffects{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVAliases{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVRelated{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVPackage{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVReferences{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVEcosystemSpecific{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("osv_id IN ?", oldIDs).Delete(&models.OSVDatabaseSpecific{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
 		if err := tx.Unscoped().Where("id IN ?", oldIDs).Delete(&models.OSV{}).Error; err != nil {
-			tx.Rollback()
 			return xerrors.Errorf("Failed to delete: %w", err)
 		}
 
