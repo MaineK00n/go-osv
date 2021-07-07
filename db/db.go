@@ -15,7 +15,7 @@ type DB interface {
 	CloseDB() error
 	MigrateDB() error
 
-	IsGostModelV1() (bool, error)
+	IsGoOSVModelV1() (bool, error)
 	GetFetchMeta() (*models.FetchMeta, error)
 	UpsertFetchMeta(*models.FetchMeta) error
 
@@ -38,9 +38,9 @@ func NewDB(dbType, dbPath string, debugSQL bool) (driver DB, locked bool, err er
 		return nil, false, err
 	}
 
-	isV1, err := driver.IsGostModelV1()
+	isV1, err := driver.IsGoOSVModelV1()
 	if err != nil {
-		log15.Error("Failed to IsGostModelV1.", "err", err)
+		log15.Error("Failed to IsGoOSVModelV1.", "err", err)
 		return nil, false, err
 	}
 	if isV1 {

@@ -1,20 +1,29 @@
 # go-osv
-`go-osv` builds a local copy of [OSV](https://osv.dev/list).
+`go-osv` builds a local copy of [Open Source Vulnerabilities; OSV](https://osv.dev/list).
 
 # Abstract
 `go-osv` is written in Go, and therefore you can just grab the binary releases and drop it in your $PATH.
 
-`go-osv` builds a local copy of [OSV](https://osv.dev/list).
+`go-osv` builds a local copy of [Open Source Vulnerabilities; OSV](https://osv.dev/list).
 
 # Main features
 `go-osv` has the following features.
-- Build a local copy of OSV
+- Build a local copy of Open Source Vulnerabilities; OSV
 - A server mode for easy querying
+
+# Installation
+```console
+$ mkdir -p $GOPATH/src/github.com/MaineK00n
+$ cd $GOPATH/src/github.com/MaineK00n
+$ git clone https://github.com/MaineK00n/go-osv.git
+$ cd go-osv
+$ make install
+```
 
 # Usage
 ```console
 $ go-osv
-OSV-Vulnerabilities
+Open Source Vulnerabilities;OSV
 
 Usage:
   go-osv [command]

@@ -15,6 +15,16 @@ import (
 
 /**
 # Redis Data Structure
+- HASH
+  ┌───┬──────────────┬────────────────────────────────────────┬──────────┬───────────────────────────┐
+  │NO │     HASH     │               FIELD                    │  VALUE   │          PURPOSE          │
+  └───┴──────────────┴────────────────────────────────────────┴──────────┴───────────────────────────┘
+  ┌───┬──────────────┬────────────────────────────────────────┬──────────┬───────────────────────────┐
+  │ 1 │OSV#$PKGNAME  │  crates.io/DWF/Go/Linux/OSS-Fuzz/PyPI  │ $CVEJSON │  TO GET JSON BY PKG Name  │
+  └───┴──────────────┴────────────────────────────────────────┴──────────┴───────────────────────────┘
+  ┌───┬──────────────┬────────────────────────────────────────┬──────────┬───────────────────────────┐
+  │ 2 │   OSV#$ID    │  crates.io/DWF/Go/Linux/OSS-Fuzz/PyPI  │ $CVEJSON │     TO GET JSON BY ID     │
+  └───┴──────────────┴────────────────────────────────────────┴──────────┴───────────────────────────┘
 **/
 
 const (
@@ -70,8 +80,8 @@ func (r *RedisDriver) MigrateDB() error {
 	return nil
 }
 
-// IsGostModelV1 determines if the DB was created at the time of Gost Model v1
-func (r *RedisDriver) IsGostModelV1() (bool, error) {
+// IsGoOSVModelV1 determines if the DB was created at the time of go-osv Model v1
+func (r *RedisDriver) IsGoOSVModelV1() (bool, error) {
 	return false, nil
 }
 

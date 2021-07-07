@@ -17,8 +17,8 @@ var cfgFile string
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
 	Use:           "go-osv",
-	Short:         "OSV-Vulnerabilities",
-	Long:          `OSV-Vulnerabilities`,
+	Short:         "Open Source Vulnerabilities;OSV",
+	Long:          `Open Source Vulnerabilities;OSV`,
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }
@@ -63,7 +63,7 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".gost" (without extension).
+		// Search config in home directory with name ".go-osv" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigName(".go-osv")
 	}

@@ -43,7 +43,7 @@ func fetchOSSFuzz(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	log15.Info("Fetched all OSV Data from osv-vulnerabilities/OSS-Fuzz")
-	osvJSONs, err := fetcher.FetchOSVs(models.OSSFuzzType)
+	osvJSONs, err := fetcher.FetchOSVs(models.OSSFuzz)
 	if err != nil {
 		log15.Error("Failed to Fetch OSV Data from osv-vulnerabilities/OSS-Fuzz.", "err", err)
 		return err
@@ -52,7 +52,7 @@ func fetchOSSFuzz(cmd *cobra.Command, args []string) (err error) {
 	log15.Info("Fetched", "OSVs", len(osvJSONs))
 
 	log15.Info("Insert OSVs into DB", "db", driver.Name())
-	if err := driver.InsertOSVs(models.OSSFuzzType, osvJSONs); err != nil {
+	if err := driver.InsertOSVs(models.OSSFuzz, osvJSONs); err != nil {
 		log15.Error("Failed to insert.", "dbpath",
 			viper.GetString("dbpath"), "err", err)
 		return err
