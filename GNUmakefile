@@ -11,7 +11,16 @@
 	test \
 	integration \
 	cov \
-	clean
+	clean \
+	build-integration \
+	clean-integration \
+	fetch-rdb \
+	fetch-redis \
+	diff-cveid \
+	diff-package \
+	diff-server-rdb \
+	diff-server-redis \
+	diff-server-rdb-redis
 
 SRCS = $(shell git ls-files '*.go')
 PKGS = $(shell go list ./...)
@@ -67,3 +76,95 @@ cov:
 
 clean:
 	$(foreach pkg,$(PKGS),go clean $(pkg) || exit;)
+
+BRANCH := $(shell git symbolic-ref --short HEAD)
+build-integration:
+	@ git stash save
+	$(GO) build -ldflags "$(LDFLAGS)" -o integration/go-osv.new
+	git checkout $(shell git describe --tags --abbrev=0)
+	@git reset --hard
+	$(GO) build -ldflags "$(LDFLAGS)" -o integration/go-osv.old
+	git checkout $(BRANCH)
+	-@ git stash apply stash@{0} && git stash drop stash@{0}
+
+clean-integration:
+	-pkill go-osv.old
+	-pkill go-osv.new
+	-rm integration/go-osv.old integration/go-osv.new integration/go-osv.old.sqlite3 integration/go-osv.new.sqlite3
+	-docker kill redis-old redis-new
+	-docker rm redis-old redis-new
+
+fetch-rdb:
+	integration/go-osv.old fetch crates.io --dbpath=integration/go-osv.old.sqlite3
+	integration/go-osv.old fetch dwf --dbpath=integration/go-osv.old.sqlite3
+	integration/go-osv.old fetch go --dbpath=integration/go-osv.old.sqlite3
+	integration/go-osv.old fetch linux --dbpath=integration/go-osv.old.sqlite3
+	integration/go-osv.old fetch oss-fuzz --dbpath=integration/go-osv.old.sqlite3
+	integration/go-osv.old fetch pypi --dbpath=integration/go-osv.old.sqlite3
+
+	integration/go-osv.new fetch crates.io --dbpath=integration/go-osv.new.sqlite3
+	integration/go-osv.new fetch dwf --dbpath=integration/go-osv.new.sqlite3
+	integration/go-osv.new fetch go --dbpath=integration/go-osv.new.sqlite3
+	integration/go-osv.new fetch linux --dbpath=integration/go-osv.new.sqlite3
+	integration/go-osv.new fetch oss-fuzz --dbpath=integration/go-osv.new.sqlite3
+	integration/go-osv.new fetch pypi --dbpath=integration/go-osv.new.sqlite3
+
+fetch-redis:
+	docker run --name redis-old -d -p 127.0.0.1:6379:6379 redis
+	docker run --name redis-new -d -p 127.0.0.1:6380:6379 redis
+
+	integration/go-osv.old fetch crates.io --dbtype redis --dbpath "redis://127.0.0.1:6379/0"
+	integration/go-osv.old fetch dwf --dbtype redis --dbpath "redis://127.0.0.1:6379/0"
+	integration/go-osv.old fetch go --dbtype redis --dbpath "redis://127.0.0.1:6379/0"
+	integration/go-osv.old fetch linux --dbtype redis --dbpath "redis://127.0.0.1:6379/0"
+	integration/go-osv.old fetch oss-fuzz --dbtype redis --dbpath "redis://127.0.0.1:6379/0"
+	integration/go-osv.old fetch pypi --dbtype redis --dbpath "redis://127.0.0.1:6379/0"
+
+	integration/go-osv.new fetch crates.io --dbtype redis --dbpath "redis://127.0.0.1:6380/0"
+	integration/go-osv.new fetch dwf --dbtype redis --dbpath "redis://127.0.0.1:6380/0"
+	integration/go-osv.new fetch go --dbtype redis --dbpath "redis://127.0.0.1:6380/0"
+	integration/go-osv.new fetch linux --dbtype redis --dbpath "redis://127.0.0.1:6380/0"
+	integration/go-osv.new fetch oss-fuzz --dbtype redis --dbpath "redis://127.0.0.1:6380/0"
+	integration/go-osv.new fetch pypi --dbtype redis --dbpath "redis://127.0.0.1:6380/0"
+
+diff-id:
+	@ python integration/diff_server_mode.py id all
+	@ python integration/diff_server_mode.py id crates.io
+	@ python integration/diff_server_mode.py id dwf
+	@ python integration/diff_server_mode.py id go
+	@ python integration/diff_server_mode.py id linux
+	@ python integration/diff_server_mode.py id oss-fuzz
+	@ python integration/diff_server_mode.py id pypi
+
+
+diff-package:
+	@ python integration/diff_server_mode.py package all
+	@ python integration/diff_server_mode.py package crates.io
+	@ python integration/diff_server_mode.py package dwf
+	@ python integration/diff_server_mode.py package go
+	@ python integration/diff_server_mode.py package linux
+	@ python integration/diff_server_mode.py package oss-fuzz
+	@ python integration/diff_server_mode.py package pypi
+
+diff-server-rdb:
+	integration/go-osv.old server --dbpath=integration/go-osv.old.sqlite3 --port 1325 > /dev/null & 
+	integration/go-osv.new server --dbpath=integration/go-osv.new.sqlite3 --port 1326 > /dev/null &
+	make diff-id
+	make diff-package
+	pkill go-osv.old 
+	pkill go-osv.new
+
+diff-server-redis:
+	integration/go-osv.old server --dbtype redis --dbpath "redis://127.0.0.1:6379/0" --port 1325 > /dev/null & 
+	integration/go-osv.new server --dbtype redis --dbpath "redis://127.0.0.1:6380/0" --port 1326 > /dev/null &
+	make diff-id
+	make diff-package
+	pkill go-osv.old 
+	pkill go-osv.new
+
+diff-server-rdb-redis:
+	integration/go-osv.new server --dbpath=integration/go-osv.new.sqlite3 --port 1325 > /dev/null &
+	integration/go-osv.new server --dbtype redis --dbpath "redis://127.0.0.1:6380/0" --port 1326 > /dev/null &
+	make diff-id
+	make diff-package
+	pkill go-osv.new
