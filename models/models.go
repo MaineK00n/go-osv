@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// LatestSchemaVersion manages the Schema version used in the latest Go-OSV.
+// LatestSchemaVersion manages the Schema version used in the latest go-osv.
 const LatestSchemaVersion = 1
 
 // FetchMeta has meta infomation about fetched security tracker
@@ -26,18 +26,18 @@ func (f FetchMeta) OutDated() bool {
 type OSVType string
 
 const (
-	// CratesIOType :
-	CratesIOType OSVType = "crates.io"
-	// DWFType :
-	DWFType OSVType = "DWF"
-	// GoType :
-	GoType OSVType = "Go"
-	// LinuxType :
-	LinuxType OSVType = "Linux"
-	// OSSFuzzType :
-	OSSFuzzType OSVType = "OSS-Fuzz"
-	// PyPIType :
-	PyPIType OSVType = "PyPI"
+	// CratesIO :
+	CratesIO OSVType = "crates.io"
+	// DWF :
+	DWF OSVType = "DWF"
+	// Go :
+	Go OSVType = "Go"
+	// Linux :
+	Linux OSVType = "Linux"
+	// OSSFuzz :
+	OSSFuzz OSVType = "OSS-Fuzz"
+	// PyPI :
+	PyPI OSVType = "PyPI"
 )
 
 // OSVJSON : https://osv.dev/docs/#tag/vulnerability_schema

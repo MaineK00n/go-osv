@@ -1,6 +1,6 @@
 package config
 
-// Version of Gost
+// Version of go-osv
 var Version = "`make build` or `make install` will show the version"
 
 // Revision of Git

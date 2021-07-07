@@ -70,8 +70,8 @@ func (r *RedisDriver) MigrateDB() error {
 	return nil
 }
 
-// IsGostModelV1 determines if the DB was created at the time of Gost Model v1
-func (r *RedisDriver) IsGostModelV1() (bool, error) {
+// IsGoOSVModelV1 determines if the DB was created at the time of go-osv Model v1
+func (r *RedisDriver) IsGoOSVModelV1() (bool, error) {
 	return false, nil
 }
 

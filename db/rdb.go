@@ -124,8 +124,8 @@ func (r *RDBDriver) MigrateDB() error {
 	return nil
 }
 
-// IsGostModelV1 determines if the DB was created at the time of Gost Model v1
-func (r *RDBDriver) IsGostModelV1() (bool, error) {
+// IsGoOSVModelV1 determines if the DB was created at the time of go-osv Model v1
+func (r *RDBDriver) IsGoOSVModelV1() (bool, error) {
 	if r.conn.Migrator().HasTable(&models.FetchMeta{}) {
 		return false, nil
 	}
