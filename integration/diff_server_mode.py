@@ -57,7 +57,7 @@ def diff_response(args: Tuple[str, str, str]):
 parser = argparse.ArgumentParser()
 parser.add_argument('mode', choices=['id', 'package'],
                     help='Specify the mode to test.')
-parser.add_argument('fetchtype', choices=['all', 'crates.io', 'dwf', 'go', 'linux', 'oss-fuzz', 'pypi'],
+parser.add_argument('fetchtype', choices=['all', 'crates.io', 'DWF', 'Go', 'Linux', 'OSS-Fuzz', 'PyPI'],
                     help='Specify the Fetch Type to be started in server mode when testing.')
 parser.add_argument(
     '--debug', action=argparse.BooleanOptionalAction, help='print debug message')

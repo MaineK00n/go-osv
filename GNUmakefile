@@ -130,21 +130,21 @@ fetch-redis:
 diff-id:
 	@ python integration/diff_server_mode.py id all
 	@ python integration/diff_server_mode.py id crates.io
-	@ python integration/diff_server_mode.py id dwf
-	@ python integration/diff_server_mode.py id go
-	@ python integration/diff_server_mode.py id linux
-	@ python integration/diff_server_mode.py id oss-fuzz
-	@ python integration/diff_server_mode.py id pypi
+	@ python integration/diff_server_mode.py id DWF
+	@ python integration/diff_server_mode.py id Go
+	@ python integration/diff_server_mode.py id Linux
+	@ python integration/diff_server_mode.py id OSS-Fuzz
+	@ python integration/diff_server_mode.py id PyPI
 
 
 diff-package:
 	@ python integration/diff_server_mode.py package all
 	@ python integration/diff_server_mode.py package crates.io
-	@ python integration/diff_server_mode.py package dwf
-	@ python integration/diff_server_mode.py package go
-	@ python integration/diff_server_mode.py package linux
-	@ python integration/diff_server_mode.py package oss-fuzz
-	@ python integration/diff_server_mode.py package pypi
+	@ python integration/diff_server_mode.py package DWF
+	@ python integration/diff_server_mode.py package Go
+	@ python integration/diff_server_mode.py package Linux
+	@ python integration/diff_server_mode.py package OSS-Fuzz
+	@ python integration/diff_server_mode.py package PyPI
 
 diff-server-rdb:
 	integration/go-osv.old server --dbpath=integration/go-osv.old.sqlite3 --port 1325 > /dev/null & 
