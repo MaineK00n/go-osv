@@ -12,11 +12,6 @@
 - A server mode for easy querying
 
 # Installation
-## Requirements
-- SQLite3, MySQL, PostgreSQL or Redis
-- git
-- go 
-## Install
 ```console
 $ mkdir -p $GOPATH/src/github.com/MaineK00n
 $ cd $GOPATH/src/github.com/MaineK00n
